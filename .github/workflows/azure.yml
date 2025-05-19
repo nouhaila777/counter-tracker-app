@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -14,16 +15,16 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build and push container image to GitHub Container Registry
+    - name: Build Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         push: false  # push false car on déploie localement vers App Service
-        tags: dockerci-job:${{ github.sha }}
+        tags: counter-tracker-app:${{ github.sha }}
 
     - name: Deploy to Azure Web App for Containers
       uses: azure/webapps-deploy@v3
       with:
-        app-name: 'dockerci-job'  # smiya li 3taytiha f Azure
+        app-name: 'counter-tracker-app'  # <<< smiya dyal lapp f Azure
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        images: dockerci-job:${{ github.sha }}
+        images: counter-tracker-app:${{ github.sha }}
